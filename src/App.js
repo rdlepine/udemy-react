@@ -7,26 +7,36 @@ class App extends Component {
   state = {
     persons: [
       {
-        name: 'Max', age: 28
+        id: 1, name: 'Max', age: 28
       },
       {
-        name: 'Manu', age: 29
+        id: 2, name: 'Manu', age: 29
       },
       {
-        name: 'Stephanie', age: 26
+        id: 3, name: 'Stephanie', age: 26
       },
-    ]
+    ],
+    showPersons: true
   }
 
   switchName = () => {
-    let persons = this.state.persons;
-    persons[1].name = "Jerk";
-    this.setState({persons:persons} )
+    // let persons = this.state.persons;
+    // persons[1].name = "Jerk";
+    // this.setState({persons:persons} )
+    this.setState({showPersons:  !this.state.showPersons})
   }
 
-  nameChangedHandler = (event) => {
-    let persons = this.state.persons;
-    persons[1].name = event.target.value;
+  deletePersonHandler = (personIndex) => {
+    const persons = this.state.persons.slice();
+    persons.splice(personIndex, 1);
+    this.setState({persons: persons});
+  }
+
+  nameChangedHandler = (event, id) => {
+    const personIndex = this.state.persons.find( (person) => {
+      return person.id = id;
+    });
+    persons[].name = event.target.value;
 
     this.setState({persons:persons});
   }
@@ -41,18 +51,26 @@ class App extends Component {
       cursor: 'pointer'
 
     }
+   
+    let persons = null;
+
+    if(this.state.showPersons) {
+      persons = (
+        <div>
+          {this.state.persons.map( (person, key) => {
+            return  <Person key={person.id} name={person.name} click={ () => this.deletePersonHandler(key)} change={ (event) => this.nameChangeHandler(event, person.id)} />
+          })}
+       </div>
+      )
+    }
 
     return (
       <div className="App">
         <h1>I'm a React app</h1>
         <p>For Real</p>
         <button onClick={this.switchName} style={style}>Switch Name</button>
-        <div>
-          <Person name={this.state.persons[0].name}>Child Here</Person>
-          <Person name={this.state.persons[1].name} changed={this.nameChangedHandler}/>
-          <Person name={this.state.persons[2].name} click={this.switchName}/>
-        </div>
-      </div>
+        {persons}
+       </div>
     );
   }
 }
